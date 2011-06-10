@@ -2,6 +2,7 @@ source :gemcutter
 
 gem "sinatra", "~> 1.2.6"
 gem "resque", "~> 1.17.1"
+gem "rake", "~> 0.9.0"
 
 group :development do
   gem "shotgun", "~> 0.9"
