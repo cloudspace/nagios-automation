@@ -1,4 +1,8 @@
 require File.join(File.dirname(__FILE__), 'application')
+require 'rubygems'
+require 'bundler/setup'
+require 'erubis'
+require 'resque/server'
 
 set :run, false
 set :environment, :production
@@ -8,5 +12,7 @@ log = File.new("log/sinatra.log", "a+")
 $stdout.reopen(log)
 $stderr.reopen(log)
 
-run Sinatra::Application
+run Rack::URLMap.new \
+  "/"       => Sinatra::Application.new,
+  "/resque" => Resque::Server.new
 
