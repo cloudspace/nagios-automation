@@ -11,8 +11,3 @@ group :development do
   gem "capistrano"
 end
 
-group :production do
-  gem "unicorn", "~> 3.7.0"
-  gem "god", "~> 0.11.0"
-end
-
