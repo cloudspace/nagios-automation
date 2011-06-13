@@ -1,0 +1,38 @@
+# Simple YAML structure mapping recipe and role names to check (service) names.
+# Expressed in a simple tuple format:
+# -
+#   - <Check description>
+#   - <Check command>
+# TODO: make pointers to recipe names to DRY up roles.
+---
+# Checks to put on every node.
+basic_checks:
+  - 
+    - "Free Memory"
+    - "check_mem"
+  - 
+    - "Load Average"
+    - "check_load"
+  - 
+    - "Ping check"
+    - "check_ping!100.0,20%!500.0,60%"
+  - 
+    - "SSH Check"
+    - "check_ssh"
+  - 
+    - "Free Space All Disks"
+    - "check_all_disks"
+
+# Matching recipes namespace. Put definitions here to match eg. "recipe[nginx]" as a run_list item.
+recipe:
+  nginx:
+    -
+      - "Nginx Running"
+      - "check_nginx"
+    -
+      - "HTTP Check: %{node_name}"
+      - "http_check!%{local_ipv4}"
+
+# Matching roles namespace. Put definitions here to match eg. "role[rails_web]" as a run_list item.
+role:
+
