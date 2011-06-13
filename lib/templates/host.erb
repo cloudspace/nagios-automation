@@ -1,0 +1,7 @@
+define host {
+  use             server
+  address         <%= local_ipv4 %>
+  host_name       <%= node_name %>
+  hostgroups      <%= node_groups.join(',') %>
+  contact_groups  cloudspace
+}
