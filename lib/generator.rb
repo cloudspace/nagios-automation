@@ -67,14 +67,14 @@ class Generator
   #
   # @TODO figure out what to do when it can't find a mapping for a run_list item
   def get_services!
+    # Add all basic checks
+    self.mappings['basic_checks'].each { |check| @services << check }
+
     self.context.run_list.each do |item|
       # Parse item
       unless /(?<type>\w+)\[(?<name>\w+)\]/ =~ item
         next
       end
-     
-      # Add all basic checks
-      self.mappings['basic_checks'].each { |check| @services << check }
 
       # Get the checks for this item
       self.mappings[type][name].each { |check| @services << check }
