@@ -52,8 +52,8 @@ class Generator
 
       struct = OpenStruct.new
       struct.node_name = self.context.node_name
-      struct.service_name = (s.first =~ /%{.*}/) ? (s.first % context_hash) : s.first
-      struct.service_command = (s.last =~ /%{.*}/) ? (s.last % context_hash) : s.last
+      struct.service_name = (s.first =~ /%\{.*\}/) ? (s.first % context_hash) : s.first
+      struct.service_command = (s.last =~ /%\{.*\}/) ? (s.last % context_hash) : s.last
 
       o << service.evaluate(struct) << "\n"
     end
