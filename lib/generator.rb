@@ -10,7 +10,8 @@ require 'set'
 # @author Josh Lindsey
 # @since 0.0.1
 class Generator
-  @@mappings_file = File.expand_path(File.dirname(__FILE__) + '/../../config/mappings.yaml')
+  MappingsFile = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'config', 'mappings.yaml'))
+  TemplateDir = File.expand_path(File.dirname(__FILE__), 'templates')
 
   attr_reader :mappings, :services, :context
 
@@ -27,7 +28,7 @@ class Generator
       raise "Missing required init option: #{req}" unless opts.keys.include? req
     end
 
-    @mappings = YAML.load_file @@mappings_file
+    @mappings = YAML.load_file MappingsFile
     @context = OpenStruct.new opts
     @services = Set.new
   end
@@ -41,8 +42,8 @@ class Generator
     get_services!
 
     o = ''
-    host = Erubis::TinyEruby.new(File.read(File.expand_path(File.dirname(__FILE__) + '/templates/host.erb')))
-    service = Erubis::TinyEruby.new(File.read(File.expand_path(File.dirname(__FILE__) + '/templates/service.erb')))
+    host = Erubis::TinyEruby.new(File.read(File.join(TemplateDir, 'host.erb')))
+    service = Erubis::TinyEruby.new(File.read(File.join(TemplateDir, 'service.erb')))
 
     o << host.evaluate(self.context) << "\n"
 
