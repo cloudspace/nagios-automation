@@ -11,7 +11,7 @@ post '/register' do
   content_type 'application/json'
 
   begin
-    parsed = JSON(params[:message])
+    parsed = JSON(request.body.read)
     Resque.enqueue(Runner, 'register', parsed)
 
     { :success => true }.to_json
@@ -24,7 +24,7 @@ post '/unregister' do
   content_type 'application/json'
   
   begin
-    parsed = JSON(params[:message])
+    parsed = JSON(request.body.read)
     Resque.enqueue(Runner, 'unregister', parsed)
     
     { :success => true }.to_json
