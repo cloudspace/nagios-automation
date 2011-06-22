@@ -10,7 +10,7 @@ require 'set'
 # @author Josh Lindsey
 # @since 0.0.1
 class Generator
-  MappingsFile = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'config', 'mappings.yaml'))
+  MappingsFile = File.expand_path(File.join(File.dirname(__FILE__),  '..', 'config', 'mappings.yaml'))
   TemplateDir = File.expand_path(File.dirname(__FILE__), 'templates')
 
   attr_reader :mappings, :services, :context
