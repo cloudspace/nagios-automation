@@ -24,7 +24,7 @@ class Generator
   # @option opts [String] :local_ipv4 The Local IP address of the node
   # @option opts [Array<String>] :run_list The run list applied to the node
   def initialize opts = {}
-    [:node_name, :node_groups, :local_ipv4, :run_list].each do |req|
+    [:node_name, :local_ipv4, :run_list].each do |req|
       raise "Missing required init option: #{req}" unless opts.keys.include? req
     end
 
