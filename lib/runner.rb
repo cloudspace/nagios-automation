@@ -45,7 +45,7 @@ class Runner
       gen_opts = {
         :node_name => data['node']['node_name'],
         :local_ipv4 => data['node']['local_ipv4'],
-        :run_list => data.run_list
+        :run_list => data['run_list']
       }
 
       gen = Generator.new gen_opts
