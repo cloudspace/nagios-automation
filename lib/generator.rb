@@ -11,7 +11,7 @@ require 'set'
 # @since 0.0.1
 class Generator
   MappingsFile = File.expand_path(File.join(File.dirname(__FILE__),  '..', 'config', 'mappings.yaml'))
-  TemplateDir = File.expand_path(File.dirname(__FILE__), 'templates')
+  TemplatesDir = File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
 
   attr_reader :mappings, :services, :context
 
@@ -42,8 +42,8 @@ class Generator
     get_services!
 
     o = ''
-    host = Erubis::TinyEruby.new(File.read(File.join(TemplateDir, 'host.erb')))
-    service = Erubis::TinyEruby.new(File.read(File.join(TemplateDir, 'service.erb')))
+    host = Erubis::TinyEruby.new(File.read(File.join(TemplatesDir, 'host.erb')))
+    service = Erubis::TinyEruby.new(File.read(File.join(TemplatesDir, 'service.erb')))
 
     o << host.evaluate(self.context) << "\n"
 
