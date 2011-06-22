@@ -43,8 +43,7 @@ class Runner
     # @return [String] The generated configs
     def generate_config data
       gen_opts = {
-        :node_name => data['node']['tags']['Name'],
-        :node_groups => groups,
+        :node_name => data['node']['node_name'],
         :local_ipv4 => data['node']['local_ipv4'],
         :run_list => data.run_list
       }
