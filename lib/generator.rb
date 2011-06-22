@@ -29,7 +29,7 @@ class Generator
     end
 
     @mappings = YAML.load_file MappingsFile
-    @context = OpenStruct.new opts
+    @context = get_context opts
     @services = Set.new
   end
 
@@ -59,6 +59,26 @@ class Generator
     end
 
     o.strip
+  end
+
+  ##
+  # Parses the opts from [#initialize] into an [OpenStruct] to be used in [#generate].
+  # 
+  # @return [OpenStruct] The parsed opts in OpenStruct form.
+  def get_context opts
+    os = OpenStruct.new opts
+    groups = []
+
+    os.run_list.each do |item|
+      if /role\[(?<group>\w+)\]/ =~ item
+        groups << group
+      end
+    end
+
+    groups << "ungrouped" if groups.empty?
+    os.node_groups = groups
+
+    os
   end
 
   ##
