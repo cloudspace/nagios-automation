@@ -21,6 +21,31 @@ module RunnerUtils
     end
 
     ##
+    # Allows for calling {Logger} convenience methods {#debug}, #{error}, etc.
+    #
+    # @param [Symbol] sym The method symbol to pass in.
+    # @param [*Array] args The splatted array of args to pass
+    def method_missing sym, *args
+      if [:debug, :info, :warn, :error, :fatal].include? sym
+        log sym, *args
+      else
+        super
+      end
+    end
+
+    ##
+    # Corresponds to {#method_missing} to allow for class reflection.
+    #
+    # @param [Symbol] sym The message symbol
+    def respond_to? sym
+      if [:debug, :info, :warn, :error, :fatal].include? sym
+        true
+      else
+        super
+      end
+    end
+
+    ##
     # Abstraction over {Logger#log}, allowing us to more easily send emails in a centralized location.
     # This method will log the specified message and level, then optionally send an email if the app
     # is configured appropriately.
