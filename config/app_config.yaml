@@ -6,10 +6,13 @@
 log_file: /mnt/log/nagios_automation.log
 
 # Level to log at. Available levels:
-# debug, info, warn, error, critical
+# debug, info, warn, error, fatal
 log_level: info
 
 # Directory to write the generated config files into. Will create if able.
 output_dir: /etc/nagios3/conf.d/auto
+
+# Write out a config file even if there's already a file with that name
+allow_overwrites: false
 
 # TODO: add emails here for various notifications
