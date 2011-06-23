@@ -76,7 +76,7 @@ module RunnerUtils
     # Loads the app config file into an [OpenStruct] and returns it.
     #
     # @return [OpenStruct] The app config
-    def load_app_cofig
+    def load_app_config
       app_config = YAML.load_file ConfigFile
 
       app_config['log_file'] &&= Pathname.new app_config['log_file']
