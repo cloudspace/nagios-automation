@@ -91,7 +91,7 @@ module RunnerUtils
     #
     # @return [Logger] The internal Logger
     def logger
-      if @@logger.nil?
+      unless defined?(@@logger) and @@logger.instance_of?(Logger)
         @@logger = Logger.new app_config.log_file
         @@logger.level = app_config.log_level
       end
