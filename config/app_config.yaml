@@ -15,11 +15,18 @@ output_dir: /etc/nagios3/conf.d/auto
 # Write out a config file even if there's already a file with that name
 allow_overwrites: false
 
-# Enable or disable sending emails for erors
+# Enable or disable sending any emails for errors
 email_alerts: true
 
+# Threshold for sending an email alert. Corresponds to the possible levels for log_level.
+# You probably don't want to set this any lower than warn.
+# TODO: This is too opaque to the user. Who knows what things constitue a warn or info without
+#       looking through the code? A better system would be a set of events or triggers, but would
+#       take a lot more work.
+email_alert_level: warn
+
 # List of email addresses to send alerts to
-# TODO: Make this system more robust with error levels, etc
+# TODO: Make this system more robust with error levels per email, etc
 # TODO: Look into a logger that will send emails on log events automatically
 emails:
   - josh@cloudspace.com
