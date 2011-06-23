@@ -61,7 +61,7 @@ class Runner
 
       app_config['log_file'] &&= Pathname.new app_config['log_file']
       app_config['output_dir'] &&= Pathname.new app_config['output_dir']
-      app_config['log_level'] &&= Logger.const_get(app_config['log_level'])
+      app_config['log_level'] &&= Logger.const_get(app_config['log_level'].upcase)
 
       OpenStruct.new app_config
     end
