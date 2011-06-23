@@ -13,6 +13,7 @@ require 'nagios_controller'
 # @author Josh Lindsey
 # @since 0.0.1
 class Runner
+  # Default queue for Resque
 	@queue = :nagios
 
   class << self
@@ -68,17 +69,17 @@ class Runner
     # @param [String] node_name The node_name to be used for naming the file.
     # @param [String] config_data The configuration data to write out to the files.
     def create_files! node_name, config_data
-      unless $app_conf.output_dir.exist?
-        RunnerUtils.warn "Created output directory at #{$app_conf.output_dir.to_s}"
-        $app_conf.output_dir.mkpath
+      unless RunnerUtils.app_config.output_dir.exist?
+        RunnerUtils.warn "Created output directory at #{RunnerUtils.app_config.output_dir.to_s}"
+        RunnerUtils.app_config.output_dir.mkpath
       end
 
-      filename = $app_conf.output_dir + "#{node_name}.cfg"
+      filename = RunnerUtils.app_config.output_dir + "#{node_name}.cfg"
 
       if filename.exist?
         RunnerUtils.warn "Config file already exists: #{filename.to_s}"
 
-        unless $app_conf.allow_overwrites == true
+        unless RunnerUtils.app_config.allow_overwrites == true
           RunnerUtils.fatal "Refusing to overwrite existing config at #{filename.to_s}"
           raise "Not configured to overwrite. Offending file at #{filename.to_s}"
         end
@@ -94,7 +95,7 @@ class Runner
     #
     # @param [String] node_name The node_name to be used for finding the file to be removed.
     def remove_files! node_name
-      filename = $app_conf.output_dir + "#{node_name}.cfg"
+      filename = RunnerUtils.app_config.output_dir + "#{node_name}.cfg"
       
       unless filename.exist?
         RunnerUtils.fatal "Unregister for #{node_name} expects nonexistant file to exist at #{filename.to_s}"
