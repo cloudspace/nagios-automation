@@ -15,4 +15,13 @@ output_dir: /etc/nagios3/conf.d/auto
 # Write out a config file even if there's already a file with that name
 allow_overwrites: false
 
-# TODO: add emails here for various notifications
+# Enable or disable sending emails for erors
+email_alerts: true
+
+# List of email addresses to send alerts to
+# TODO: Make this system more robust with error levels, etc
+# TODO: Look into a logger that will send emails on log events automatically
+emails:
+  - josh@cloudspace.com
+  - mcupples@cloudspace.com
+
