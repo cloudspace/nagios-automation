@@ -1,0 +1,15 @@
+# General app config settings for the resque worker.
+# Be sure to restart the worker when you change these settings:
+# `sudo god restart resque`
+---
+# Directory to log into. Will create if able
+log_dir: /mnt/log/nagios_automation
+
+# Level to log at. Available levels:
+# debug, info, warn, error, critical
+log_level: info
+
+# Directory to write the generated config files into. Will create if able.
+output_dir: /etc/nagios3/conf.d/auto
+
+# TODO: add emails here for various notifications
