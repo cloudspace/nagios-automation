@@ -25,15 +25,15 @@ class Generator
   # @option opts [Array<String>] :run_list The run list applied to the node
   def initialize opts = {}
     [:node_name, :local_ipv4, :run_list].each do |req|
-      $logger.fatal "Missing required Generator option: #{req}"
+      RunnerUtils.fatal "Missing required Generator option: #{req}"
       raise "Missing required init option: #{req}" unless opts.keys.include? req
     end
 
     @mappings = YAML.load_file MappingsFile
-    $logger.debug "Loaded mappings: #{@mappings.inspect}"
+    RunnerUtils.debug "Loaded mappings: #{@mappings.inspect}"
 
     @context = get_context opts
-    $logger.debug "Created context: #{@context.insepct}"
+    RunnerUtils.debug "Created context: #{@context.insepct}"
 
     @services = Set.new
   end
@@ -44,7 +44,7 @@ class Generator
   #
   # @return [String] The generated config
   def generate
-    $logger.debug "Generating config"
+    RunnerUtils.debug "Generating config"
 
     get_services!
 
@@ -55,7 +55,7 @@ class Generator
     o << host.evaluate(self.context) << "\n"
 
     self.services.each do |s|
-      $logger.debug "Generating config for service #{s.inspect}"
+      RunnerUtils.debug "Generating config for service #{s.inspect}"
 
       context_hash = self.context.marshal_dump
 
@@ -67,7 +67,7 @@ class Generator
       o << service.evaluate(struct) << "\n"
     end
 
-    $logger.debug "Config generated: #{o}"
+    RunnerUtils.debug "Config generated: #{o}"
     o.strip
   end
 
@@ -86,7 +86,7 @@ class Generator
     end
 
     if groups.empty?
-      $logger.warn "No roles detected, adding node to ungrouped"
+      RunnerUtils.warn "No roles detected, adding node to ungrouped"
       groups << "ungrouped"
     end
 
@@ -105,11 +105,11 @@ class Generator
     self.mappings['basic_checks'].each { |check| @services << check }
 
     self.context.run_list.each do |item|
-      $logger.debug "Parsing runlist item: #{item}"
+      RunnerUtils.debug "Parsing runlist item: #{item}"
 
       # Parse item
       unless /(?<type>\w+)\[(?<name>\w+)\]/ =~ item
-        $logger.warn "Unable to parse runlist item: #{item}"
+        RunnerUtils.warn "Unable to parse runlist item: #{item}"
         next
       end
 
@@ -120,7 +120,7 @@ class Generator
 
         checks.each { |check| @services << check }
       rescue NoMethodError => e
-        $logger.warn "Unknown service or no checks defined for #{item}"
+        RunnerUtils.warn "Unknown service or no checks defined for #{item}"
       end
     end
   end

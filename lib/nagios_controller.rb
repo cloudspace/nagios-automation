@@ -25,7 +25,7 @@ class NagiosController
   # Initializes a new {NagiosController} object. Detects platform and stores it for later.
   def initialize
     detect_platform!
-    $logger.debug "Initialized NagiosController. Platform detected as #{self.platform} #{self.platform_version}"
+    RunnerUtils.debug "Initialized NagiosController. Platform detected as #{self.platform} #{self.platform_version}"
   end
  
   ##
@@ -60,21 +60,21 @@ class NagiosController
   # @param [Symbol] cmd The service command to run.
   def run cmd
     command = @@platform_commands[@platform][cmd]
-    $logger.debug "NagiosController running command #{cmd}, translated to #{command}"
+    RunnerUtils.debug "NagiosController running command #{cmd}, translated to #{command}"
 
     popen2e command do |stdin, out, wait_thread|
       status = wait_thread.value
 
       if status.to_i != 0
         o = ''; out.each { |line| o << line }
-        $logger.fatal "Nagios command unsuccessful: #{command}. Output:"
-        $logger.fatal o
+        RunnerUtils.fatal "Nagios command unsuccessful: #{command}. Output:"
+        RunnerUtils.fatal o
 
         raise "Nagios command unsuccessful #{command}. See log for details."
       end
     end
 
-    $logger.info "Nagios command successful: #{command}"
+    RunnerUtils.info "Nagios command successful: #{command}"
   end
 
   ##
