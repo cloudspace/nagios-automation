@@ -11,11 +11,13 @@ class NagiosController
   attr_accessor :platform
   attr_accessor :platform_version
 
+  Commands = [:start, :stop, :restart]
+
   @@platform_commands = {
     "ubuntu" => {
-      :start => 'service nagios3 start',
-      :stop => 'service nagios3 stop',
-      :restart => 'service nagios3 restart' 
+      start:    'service nagios3 start',
+      stop:     'service nagios3 stop',
+      restart:  'service nagios3 restart' 
     }
   }
 
@@ -23,6 +25,7 @@ class NagiosController
   # Initializes a new {NagiosController} object. Detects platform and stores it for later.
   def initialize
     detect_platform!
+    $logger.debug "Initialized NagiosController. Platform detected as #{self.platform} #{self.platform_version}"
   end
  
   ##
@@ -32,7 +35,7 @@ class NagiosController
   # @param [Symbol] sym The message symbol
   # @param [*Array] args The splatted array of arguments
   def method_missing sym, *args
-    if [:start, :stop, :restart].include? sym
+    if Commands.include? sym
       self.run sym
     else
      super
@@ -44,7 +47,7 @@ class NagiosController
   #
   # @param [Symbol] sym The message symbol
   def respond_to? sym
-    if [:start, :stop, :restart].include? sym
+    if Commands.include? sym
       true
     else
       super
@@ -56,14 +59,22 @@ class NagiosController
   #
   # @param [Symbol] cmd The service command to run.
   def run cmd
-    begin
-      command = @@platform_commands[@platform][cmd]
-      raise NoMethodError if command.nil?
-    rescue NoMethodError => e
-      return
+    command = @@platform_commands[@platform][cmd]
+    $logger.debug "NagiosController running command #{cmd}, translated to #{command}"
+
+    popen2e command do |stdin, out, wait_thread|
+      status = wait_thread.value
+
+      if status.to_i != 0
+        o = ''; out.each { |line| o << line }
+        $logger.fatal "Nagios command unsuccessful: #{command}. Output:"
+        $logger.fatal o
+
+        raise "Nagios command unsuccessful #{command}. See log for details."
+      end
     end
 
-		system command
+    $logger.info "Nagios command successful: #{command}"
   end
 
   ##
