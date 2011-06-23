@@ -3,7 +3,7 @@
 # `sudo god restart resque`
 ---
 # Directory to log into. Will create if able
-log_dir: /mnt/log/nagios_automation
+log_file: /mnt/log/nagios_automation.log
 
 # Level to log at. Available levels:
 # debug, info, warn, error, critical
