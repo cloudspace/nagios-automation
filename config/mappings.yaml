@@ -37,6 +37,7 @@ recipe:
 role:
 
 # Ignored namespace. Definitions put here will be ignored, so unmonitorable recipes won't raise warnings.
+# NOTE: Definitions put here will be ignored EVEN IF THEY ALSO EXIST ABOVE.
 ignored:
   recipe:
 
