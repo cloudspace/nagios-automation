@@ -81,8 +81,12 @@ class NagiosController
   # Detects the current platform by way of Ohai.
   def detect_platform!
     o = Ohai::System.new
-    %w(os platform).each { |plugin| o.load_plugin plugin }
+    %w(os platform).each { |plugin| o.require_plugin plugin }
     @platform = o.platform
     @platform_version = o.platform_version
+
+    if @platform.empty? or @platform.nil?
+      RunnerUtils.error "Unable to detect platform. Nagios will not be able to restart."
+    end
   end
 end
