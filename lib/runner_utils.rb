@@ -53,8 +53,6 @@ module RunnerUtils
     # @param [Symbol] level The level to log this message at. See {Logger} for severity levels.
     # @param [String] message The message to log
     def log level, message
-      logger.debug "Called log method with level: #{level}, message: #{message}"
-
       const_level = Logger.const_get(level.to_s.upcase)
       logger.log const_level, message
 
