@@ -13,10 +13,16 @@ post '/register' do
   begin
     parsed = JSON(request.body.read)
     Resque.enqueue(Runner, 'register', parsed)
+   
+    out = { :success => true }.to_json
 
-    { :success => true }.to_json
+    status 200
+    body out
   rescue Exception => e
-    { :success => false, :error => e.to_s }.to_json
+    out = { :success => false, :error => e.to_s }.to_json
+
+    status 500
+    body out
   end
 end
 
@@ -27,9 +33,15 @@ post '/unregister' do
     parsed = JSON(request.body.read)
     Resque.enqueue(Runner, 'unregister', parsed)
     
-    { :success => true }.to_json
+    out = { :success => true }.to_json
+
+    status 200
+    body out
   rescue Exception => e
-    { :success => false, :error => e.to_s }.to_json
+    out = { :success => false, :error => e.to_s }.to_json
+
+    status 500
+    body out
   end
 end
 
