@@ -25,8 +25,10 @@ class Generator
   # @option opts [Array<String>] :run_list The run list applied to the node
   def initialize opts = {}
     [:node_name, :local_ipv4, :run_list].each do |req|
-      RunnerUtils.fatal "Missing required Generator option: #{req}"
-      raise "Missing required init option: #{req}" unless opts.keys.include? req
+      unless opts.keys.include? req
+        RunnerUtils.fatal "Missing required Generator option: #{req}"
+        raise "Missing required init option: #{req}"
+      end
     end
 
     @mappings = YAML.load_file MappingsFile
@@ -86,7 +88,7 @@ class Generator
     end
 
     if groups.empty?
-      RunnerUtils.warn "No roles detected, adding node to ungrouped"
+      RunnerUtils.warn "No roles detected, adding node #{opts.node_name} to ungrouped"
       groups << "ungrouped"
     end
 
