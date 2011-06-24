@@ -41,5 +41,5 @@ ignored:
   recipe:
 
   role:
-    - "nagios-automation-test"
+    - "nagios-register-test"
 
