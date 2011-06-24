@@ -93,7 +93,7 @@ module RunnerUtils
     def logger
       unless defined?(@@logger) and @@logger.instance_of?(Logger)
         @@logger = Logger.new app_config.log_file
-        @@logger.level = app_config.log_level
+        @@logger.level = Logger.const_get(app_config.log_level.upcase)
       end
 
       @@logger
