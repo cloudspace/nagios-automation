@@ -117,6 +117,11 @@ class Generator
 
       # Get the checks for this item
       begin
+        if self.mappings['ignored'][type].include? name
+          RunnerUtils.debug "Ignoring #{item}"
+          next
+        end
+
         checks = self.mappings[type][name]
         raise NoMethodError if checks.nil? or checks.empty?
 
