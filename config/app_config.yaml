@@ -30,5 +30,5 @@ email_alert_level: warn
 # TODO: Look into a logger that will send emails on log events automatically
 emails:
   - josh@cloudspace.com
-#  - mcupples@cloudspace.com
+  - mcupples@cloudspace.com
 
