@@ -82,7 +82,7 @@ class Generator
     groups = []
 
     os.run_list.each do |item|
-      if /role\[(?<group>.+?)\]/ =~ item
+      if /role\[(?<group>\w+)\]/ =~ item
         groups << group
       end
     end
@@ -110,7 +110,7 @@ class Generator
       RunnerUtils.debug "Parsing runlist item: #{item}"
 
       # Parse item
-      unless /(?<type>.+?)\[(?<name>.+?)\]/ =~ item
+      unless /(?<type>\w+)\[(?<name>\w+)\]/ =~ item
         RunnerUtils.warn "Unable to parse runlist item: #{item}"
         next
       end
