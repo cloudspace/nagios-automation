@@ -36,3 +36,10 @@ recipe:
 # Matching roles namespace. Put definitions here to match eg. "role[rails_web]" as a run_list item.
 role:
 
+# Ignored namespace. Definitions put here will be ignored, so unmonitorable recipes won't raise warnings.
+ignored:
+  recipe:
+
+  role:
+    - "nagios-automation-test"
+
