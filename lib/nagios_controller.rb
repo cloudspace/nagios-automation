@@ -67,8 +67,7 @@ class NagiosController
 
       if status.to_i != 0
         o = ''; out.each { |line| o << line }
-        RunnerUtils.fatal "Nagios command unsuccessful: #{command}. Output:"
-        RunnerUtils.fatal o
+        RunnerUtils.fatal "Nagios command unsuccessful: #{command}. Output: #{o}"
 
         raise "Nagios command unsuccessful #{command}. See log for details."
       end
