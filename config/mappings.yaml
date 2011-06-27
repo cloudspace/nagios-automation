@@ -40,6 +40,9 @@ role:
 # NOTE: Definitions put here will be ignored EVEN IF THEY ALSO EXIST ABOVE.
 ignored:
   recipe:
+    - "aws"
+    - "apt"
+    - "git"
 
   role:
     - "nagios-register-test"
