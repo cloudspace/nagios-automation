@@ -115,6 +115,8 @@ class Generator
         next
       end
 
+      # Recipes with ::default are redundant, so we remove it to 
+      # make the mappings file simpler.
       name.sub! /::default$/, '' if type == 'recipe'
 
       # Get the checks for this item
