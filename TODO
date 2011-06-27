@@ -1,0 +1,9 @@
+For Rev1:
+  Build out mappings file
+  Add Capistrano deploys
+
+For Rev2:
+  Expand on the email alerts, moving to event-based alerting and away from opaque log levels
+  Figure out some way to detect the client and create a config mapping clients to contact names (or convention-over-configuration and just manually setup client contactgroups)
+  Write a tool to converge the generated configs with chef changes
+
