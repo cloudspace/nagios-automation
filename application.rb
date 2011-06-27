@@ -8,13 +8,13 @@ configure do
   Dir['lib/*.rb'].each { |lib| require File.basename(lib) }
 end
 
-before do
+before '/[un]?register' do
   content_type :json
   headers 'Connection' => 'close'
 end
 
 get '/' do
-  status 404
+  halt 404
 end
 
 post '/register' do
