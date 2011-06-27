@@ -73,7 +73,7 @@ class NagiosController
       end
     end
 
-    RunnerUtils.info "Nagios command successful: #{command}"
+    RunnerUtils.debug "Nagios command successful: #{command}"
   end
 
   ##

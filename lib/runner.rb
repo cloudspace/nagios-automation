@@ -35,12 +35,12 @@ class Runner
         create_files! data['node']['node_name'], config
         controller.restart
 
-        RunnerUtils.info "Registration complete for #{data['node']['node_name']}"
+        RunnerUtils.info "Registered node: #{data['node']['node_name']}"
       when 'unregister'
         remove_files! data['node_name']
         controller.restart
 
-        RunnerUtils.info "Unregistration complete for #{data['node_name']}"
+        RunnerUtils.info "Unregistered node: #{data['node_name']}"
       else
         RunnerUtils.fatal "Unknown or missing action: #{action}"
         raise "Unknown or missing action: #{action}"
@@ -87,7 +87,7 @@ class Runner
 
       filename.open('w') { |f| f.puts config_data }
 
-      RunnerUtils.info "Wrote config to file #{filename.to_s}"
+      RunnerUtils.debug "Wrote config to file #{filename.to_s}"
     end
 
     ##
@@ -103,7 +103,7 @@ class Runner
       end
 
       filename.delete
-      RunnerUtils.info "Deleted file at #{filename.to_s}"
+      RunnerUtils.debug "Deleted file at #{filename.to_s}"
     end
   end
 end
