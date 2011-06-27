@@ -115,6 +115,8 @@ class Generator
         next
       end
 
+      name.sub! /::default$/, '' if type == 'recipe'
+
       # Get the checks for this item
       begin
         if self.mappings['ignored'][type].include? name
