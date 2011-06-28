@@ -126,10 +126,12 @@ class Generator
           next
         end
 
-        checks = self.mappings[type][name]
+        # TODO: This flatten / each_slice logic seems hackish, but I can't think of a better way to
+        #       make the YAML recipe-to-role anchoring work.
+        checks = self.mappings[type][name].flatten
         raise NoMethodError if checks.nil? or checks.empty?
 
-        checks.each { |check| @services << check }
+        checks.each_slice(2) { |check| @services << check }
       rescue NoMethodError => e
         RunnerUtils.warn "Unknown service or no checks defined for #{item}"
       end
