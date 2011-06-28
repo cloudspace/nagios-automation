@@ -70,6 +70,8 @@ role:
     *webphp
   mongo:
     [ *production, *mshard, *mconfig ]
+  "mysql-admin":
+    [ *production, 
 
 
 # Ignored namespace. Definitions put here will be ignored, so unmonitorable recipes won't raise warnings.
@@ -83,6 +85,7 @@ ignored:
     - "apparmor"
     - "onetruefan::zend"
     - "application"
+    - "database"
 
   role:
     - "nagios-register-test"
