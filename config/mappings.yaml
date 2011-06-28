@@ -3,6 +3,7 @@
 # -
 #   - <Check description>
 #   - <Check command>
+# TODO: make pointers to recipe names to DRY up roles.
 ---
 # Checks to put on every node.
 basic_checks:
@@ -24,55 +25,16 @@ basic_checks:
 
 # Matching recipes namespace. Put definitions here to match eg. "recipe[nginx]" as a run_list item.
 recipe:
-  nginx: &nginx
+  nginx:
     -
       - "Nginx Running"
       - "check_nginx"
     -
       - "HTTP Check: %{node_name}"
       - "http_check!%{local_ipv4}"
-  memcached: &memcached
-    -
-      - "Memcached Running"
-      - "check_memcached"
-  postfix: &postfix
-    -
-      - "Postfix Running"
-      - "check_postfix"
-  apache2: &apache2
-    -
-      - "Apache Running"
-      - "check_apache"
-    -
-      - "HTTP Check: %{node_name}"
-      - "http_check!%{local_ipv4}"
-  "mongodb::mongos": &mongos
-    -
-      - "Mongos Check"
-      - "check_mongos"
-  "mongodb::shard": &mshard
-    -
-      - "Mongo Shard Check"
-      - "check_mongo_shard"
-  "mongodb::config": &mconfig
-    -
-      - "Mongo Config Check"
-      - "check_mongo_config"
-    
 
 # Matching roles namespace. Put definitions here to match eg. "role[rails_web]" as a run_list item.
 role:
-  production: &production
-    *memcached
-  "web-php": &webphp
-    [ *production, *apache2, *postfix, *mongos ]
-  gearman:
-    *webphp
-  mongo:
-    [ *production, *mshard, *mconfig ]
-  "mysql-admin":
-    [ *production, 
-
 
 # Ignored namespace. Definitions put here will be ignored, so unmonitorable recipes won't raise warnings.
 # NOTE: Definitions put here will be ignored EVEN IF THEY ALSO EXIST ABOVE.
