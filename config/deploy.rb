@@ -1,22 +1,51 @@
-set :application, "set your application name here"
-set :repository,  "set your repository location here"
+set :application, "nagios_automation"
 
-set :scm, :subversion
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+set :scm, :git
+set :repository,  "git@github.com:cloudspace/nagios-automation.git"
+set :branch, "master"
+set :deploy_via, :remote_cache
+set :keep_releases, 5
 
-role :web, "your web-server here"                          # Your HTTP server, Apache/etc
-role :app, "your app-server here"                          # This may be the same as your `Web` server
-role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
-role :db,  "your slave db-server here"
+set :user, "root"
+set :use_sudo, false
+ssh_options[:forward_agent] = true
+ssh_options[:paranoid] = false
 
-# if you're still using the script/reaper helper you will need
-# these http://github.com/rails/irs_process_scripts
+role :app, "na.cloudspace.com"
+set :deploy_to, "/srv/#{application}"
 
-# If you are using Passenger mod_rails uncomment this:
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
+namespace :bundler do
+  task :ensure_bundler_installed do
+    run "gem install bundler --no-ri --no-rdoc"
+  end
+
+  task :install do
+    run "cd #{release_path} && bundle install --without=development --binstubs"
+
+    on_rollback do
+      if previous_release
+        run "cd #{previous_release} && bundle install --without=development --binstubs"
+      else
+        logger.important "No previous release to roll back to, bundler rollback skipped."
+      end
+    end
+  end
+end
+
+after "deploy:setup", "bundler:ensure_bundler_installed"
+after "deploy:update_code", "bundler:install"
+
+namespace :deploy do
+  task :start do
+    run "god -c /etc/god/all.god"
+  end
+
+  task :stop do
+    run "god terminate"
+  end
+
+  task :restart do
+    run "god restart nagios_unicorn; god restart resque"
+  end
+end
+
