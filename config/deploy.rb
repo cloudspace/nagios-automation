@@ -1,7 +1,7 @@
 set :application, "nagios_automation"
 
 set :scm, :git
-set :repository,  "git@github.com:cloudspace/nagios-automation.git"
+set :repository, "git@github.com:cloudspace/nagios-automation.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
 set :keep_releases, 5
