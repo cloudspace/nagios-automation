@@ -40,12 +40,27 @@ namespace :deploy do
     run "god -c /etc/god/all.god"
   end
 
-  task :stop do
-    run "god terminate"
-  end
+	namespace :api do
+		task :stop do
+			run "god stop unicorn"
+		end
 
-  task :restart do
-    run "god restart nagios_unicorn; god restart resque"
-  end
+		task :restart do
+			run "god restart unicorn"
+		end
+	end
+	
+	namespace :resque do
+		task :stop do
+			run "god stop resque"
+		end
+
+		task :restart do
+			run "god restart resque"
+		end
+	end
 end
+
+after "deploy:symlink", "deploy:api:restart"
+after "deploy:symlink", "deploy:resque:restart"
 
