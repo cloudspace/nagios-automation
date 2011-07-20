@@ -1,3 +1,5 @@
+require 'bundler/capistrano'
+
 set :application, "nagios_automation"
 
 set :scm, :git
@@ -14,31 +16,18 @@ ssh_options[:paranoid] = false
 role :app, "na.cloudspace.com"
 set :deploy_to, "/srv/#{application}"
 
-namespace :bundler do
-  task :ensure_bundler_installed do
-    run "gem install bundler --no-ri --no-rdoc"
-  end
-
-  task :install do
-    run "cd #{release_path} && bundle install --without=development --binstubs"
-
-    on_rollback do
-      if previous_release
-        run "cd #{previous_release} && bundle install --without=development --binstubs"
-      else
-        logger.important "No previous release to roll back to, bundler rollback skipped."
-      end
-    end
-  end
-end
-
-after "deploy:setup", "bundler:ensure_bundler_installed"
-after "deploy:update_code", "bundler:install"
-
 namespace :deploy do
   task :start do
-    run "god -c /etc/god/all.god"
+    run "start god"
   end
+
+	task :stop do
+		run "stop god"
+	end
+
+	task :restart do
+		run "restart god"
+	end
 
 	namespace :api do
 		task :stop do
