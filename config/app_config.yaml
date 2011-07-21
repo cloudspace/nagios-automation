@@ -15,6 +15,9 @@ output_dir: /etc/nagios3/conf.d/auto
 # Write out a config file even if there's already a file with that name
 allow_overwrites: false
 
+# Client to assign new nodes to if the client tag is missing or otherwise invalid
+default_client: cloudspace
+
 # Enable or disable sending any emails for errors
 email_alerts: true
 
