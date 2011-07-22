@@ -13,10 +13,15 @@ log_level: info
 output_dir: /etc/nagios3/conf.d/auto
 
 # Write out a config file even if there's already a file with that name
+# TODO: Default this to true, add another option to create backups before
+#       overwriting any files.
 allow_overwrites: false
 
-# Client to assign new nodes to if the client tag is missing or otherwise invalid
+# Client to assign new nodes to if the client tag is missing or otherwise invalid.
 default_client: cloudspace
+
+# Client to assign new ndes to if a group can't be derived. Will create if able.
+default_hostgroup: ungrouped
 
 # Enable or disable sending any emails for errors
 email_alerts: true

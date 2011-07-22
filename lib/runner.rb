@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'bundler/setup'
 require 'yaml'
 require 'json'
@@ -30,9 +29,18 @@ class Runner
 
       # Take the appropriate action
       case action
-      when 'register'
-        config = generate_config data
+			when 'register'
+				parsed_tags = parse_tags data['node']['tags']
+
+				gen = Generator.new node_name: data['node']['node_name'],
+														local_ipv4: data['node']['local_ipv4'],
+														contact: parsed_tags['client'],
+														run_list: data['run_list'].map(&:downcase)
+
+				hostgroup_configs = gen.generate_hostgroups
+        config = gen.generate
         create_files! data['node']['node_name'], config
+				create_hostgroups! hostgroup_configs
         controller.restart
 
         RunnerUtils.info "Registered node: #{data['node']['node_name']}"
@@ -47,30 +55,42 @@ class Runner
       end
     end
 
+		##
+		#	Parses the node's tags into a Hash. Essentially just splits on ":".
+		#	Ignores tags that don't follow this convention.
+		#
+		#	@param [Array<String>] tags The array of node tags
+		#	@return [Hash] The parsed tags in a Hash
+		def parse_tags tags
+			RunnerUtils.debug "Parsing tags: #{tags}"
 
-    ##
-    # Uses [Generator] to generate all the Nagios config declarations required by this Host
-    #
-    # @return [String] The generated configs
-    def generate_config data
-      gen_opts = {
-        node_name: data['node']['node_name'],
-        local_ipv4: data['node']['local_ipv4'],
-        run_list: data['run_list'].map(&:downcase)
-      }
+			parsed = {}
+			tags.each do |tag|
+				if /^(?<key>.*?):(?<value>.*?)$/ =~ tag
+					parsed[key] = value
+				else
+					RunnerUtils.debug "Ignoring tag: #{tag}"
+				end
+			end
 
-      gen = Generator.new gen_opts
-      gen.generate
-    end
+			unless parsed.tags.include? "client"
+				RunnerUtils.warn "No client tag found, defaulting to #{RunnerUtils.app_config.default_client}"
+				parsed["client"] = RunnerUtils.app_config.default_client
+			end
+
+			RunnerUtils.debug "Parsed tags: #{parsed}"
+			parsed
+		end
 
     ##
     # Creates the file structure for generated configs, and writes out the config data to them.
     #
+		# @see {Generator#generate}
     # @param [String] node_name The node_name to be used for naming the file.
     # @param [String] config_data The configuration data to write out to the files.
     def create_files! node_name, config_data
       unless RunnerUtils.app_config.output_dir.exist?
-        RunnerUtils.warn "Created output directory at #{RunnerUtils.app_config.output_dir.to_s}"
+        RunnerUtils.info "Created output directory at #{RunnerUtils.app_config.output_dir.to_s}"
         RunnerUtils.app_config.output_dir.mkpath
       end
 
@@ -90,6 +110,27 @@ class Runner
       RunnerUtils.debug "Wrote config to file #{filename.to_s}"
     end
 
+		##
+		# Creates the file structure for generated hostgroups, and writes out the config data.
+		#
+		# @see {Generator#generate_hostgroups}
+		# @param [Hash] configs The has containing the hostgroup name and its config string
+		def create_hostgroups! configs
+			RunnerUtils.debug "Writing hostgroup configs"
+
+			configs.each_pair do |group, config|
+				path = RunnerUtils.app_config.output_dir + File.join("hostgroups", "#{group}.cfg")
+				unless path.dirname.exist?
+					RunnerUtils.info "Created hostgroup directory at #{File.dirname(path)}"
+					FileUtils.mkdir_p File.dirname(path) unless File.directory? path
+				end
+
+				path.open('w') { |f| f.puts config }
+
+				RunnerUtils.debug "Wrote hostgroup config to file #{pathname.to_s}"
+			end
+		end
+
     ##
     # Removes the configuration files for a node on deregistration.
     #
@@ -97,6 +138,7 @@ class Runner
     def remove_files! node_name
       filename = RunnerUtils.app_config.output_dir + "#{node_name}.cfg"
       
+			# TODO: Make this a warning and don't halt execution
       unless filename.exist?
         RunnerUtils.fatal "Unregister for #{node_name} expects nonexistant file to exist at #{filename.to_s}"
         raise "Can't delete nonexistant file at #{filename.to_s}"

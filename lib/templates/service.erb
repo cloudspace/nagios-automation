@@ -3,5 +3,5 @@ define service {
   host_name               <%= node_name %>
   service_description     <%= service_name %>
   check_command           <%= service_command %>
-  contact_groups          cloudspace
+	contact_groups          <%= contact %>
 }

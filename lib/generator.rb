@@ -22,9 +22,10 @@ class Generator
   # @option opts [String] :node_name The Chef node name
   # @option opts [Array<String>] :node_groups The groups to which this node belongs
   # @option opts [String] :local_ipv4 The Local IP address of the node
+	# @option opts [Sting] :contact The contact group for services
   # @option opts [Array<String>] :run_list The run list applied to the node
   def initialize opts = {}
-    [:node_name, :local_ipv4, :run_list].each do |req|
+    [:node_name, :local_ipv4, :contact, :run_list].each do |req|
       unless opts.keys.include? req
         RunnerUtils.fatal "Missing required Generator option: #{req}"
         raise "Missing required init option: #{req}"
@@ -73,6 +74,26 @@ class Generator
     o.strip
   end
 
+	##
+	#	Alternate entry point. Generates an array of hostgroup configs to ensure consistency on deploys.
+	#	The files are later written out by the Runner.
+	#
+	#	@return [Hash] The hash of hostgroup name to config string mappings
+	def generate_hostgroups
+		RunnerUtils.debug "Generating hostgroup configs for #{self.context.node_groups}"
+
+		configs = {}
+		template = Erubis::TinyEruby.new(File.read(File.join(TemplatesDir, 'hostgroup.erb')))
+
+		self.context.node_groups.each do |group|
+			struct = OpenStruct.new :hostgroup => group
+			configs[group] = template.evaluate(struct)
+		end
+
+		RunnerUtils.debug "Hostgroup configs generated: #{configs}"
+		configs
+	end
+
   ##
   # Parses the opts from [#initialize] into an [OpenStruct] to be used in [#generate].
   # 
@@ -88,8 +109,8 @@ class Generator
     end
 
     if groups.empty?
-      RunnerUtils.warn "No roles detected, adding node #{opts.node_name} to ungrouped"
-      groups << "ungrouped"
+      RunnerUtils.warn "No roles detected, adding node #{opts.node_name} to #{RunnerUtils.app_config.default_hostgroup}"
+      groups << RunnerUtils.app_config.default_hostgroup
     end
 
     os.node_groups = groups
