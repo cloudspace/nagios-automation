@@ -1,5 +1,3 @@
-require 'bundler/capistrano'
-
 set :application, "nagios_automation"
 
 set :scm, :git
@@ -7,6 +5,9 @@ set :repository, "git@github.com:cloudspace/nagios-automation.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
 set :keep_releases, 5
+
+set :bundle_flags,    "--deployment --quiet --binstubs"
+require 'bundler/capistrano'
 
 set :user, "root"
 set :use_sudo, false
