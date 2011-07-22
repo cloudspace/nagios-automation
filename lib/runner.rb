@@ -127,7 +127,7 @@ class Runner
 
 				path.open('w') { |f| f.puts config }
 
-				RunnerUtils.debug "Wrote hostgroup config to file #{pathname.to_s}"
+				RunnerUtils.debug "Wrote hostgroup config to file #{path.to_s}"
 			end
 		end
 
