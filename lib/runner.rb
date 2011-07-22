@@ -73,7 +73,7 @@ class Runner
 				end
 			end
 
-			unless parsed.tags.include? "client"
+			unless parsed.keys.include? "client"
 				RunnerUtils.warn "No client tag found, defaulting to #{RunnerUtils.app_config.default_client}"
 				parsed["client"] = RunnerUtils.app_config.default_client
 			end
