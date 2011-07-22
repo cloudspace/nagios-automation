@@ -15,7 +15,7 @@ output_dir: /etc/nagios3/conf.d/auto
 # Write out a config file even if there's already a file with that name
 # TODO: Default this to true, add another option to create backups before
 #       overwriting any files.
-allow_overwrites: false
+allow_overwrites: true
 
 # Client to assign new nodes to if the client tag is missing or otherwise invalid.
 default_client: cloudspace
