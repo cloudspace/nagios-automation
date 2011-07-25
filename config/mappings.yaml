@@ -36,7 +36,7 @@ recipe:
   "mysql::server": &mysql
     -
       - "MySQL Running"
-      - "check_mysql"
+      - "check_mysql_cmdlinecred!nrpe!7D1Ybo1rS/3HjN3XDWvfPLJ7QavpBUYNhzvjTHSRNKE="
     -
       - "MySQL SELECT Check"
       - "mysql_select_check"
