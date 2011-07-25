@@ -31,7 +31,7 @@ recipe:
       - "check_nginx"
     -
       - "HTTP Check: %{node_name}"
-      - "http_check!%{local_ipv4}"
+      - "check_http!%{local_ipv4}"
   "nginx::source": *nginx
   "mysql::server": &mysql
     -
@@ -42,12 +42,12 @@ recipe:
       - "mysql_select_check"
   postfix: &postfix
     -
-      - "Postfix Running"
-      - "check_postfix"
+      - "Check SMTP"
+      - "check_smtp"
   "chef-client::service": &chef-service
     -
       - "Chef Client Running"
-      - "Check_chef_client"
+      - "check_chef_client"
   "dashboard.impermium.com": &impermium-dashboard
     -
       - "Unicorn Running"
