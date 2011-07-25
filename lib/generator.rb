@@ -25,7 +25,7 @@ class Generator
 	# @option opts [Sting] :contact The contact group for services
   # @option opts [Array<String>] :run_list The run list applied to the node
   def initialize opts = {}
-    [:node_name, :local_ipv4, :contact, :run_list].each do |req|
+    [:node_name, :local_ipv4, :contact, :hostgroup_override, :run_list].each do |req|
       unless opts.keys.include? req
         RunnerUtils.fatal "Missing required Generator option: #{req}"
         raise "Missing required init option: #{req}"
@@ -103,11 +103,15 @@ class Generator
     os = OpenStruct.new opts
     groups = []
 
-    os.run_list.each do |item|
-      if /role\[(?<group>.+?)\]/ =~ item
-        groups << group
-      end
-    end
+		if opts[:hostgroup_override] == :default
+			os.run_list.each do |item|
+				if /role\[(?<group>.+?)\]/ =~ item
+					groups << group
+				end
+			end
+		else
+			groups << opts[:hostgroup_override]
+		end
 
     if groups.empty?
       RunnerUtils.warn "No roles detected, adding node #{opts.node_name} to #{RunnerUtils.app_config.default_hostgroup}"

@@ -35,6 +35,7 @@ class Runner
 				gen = Generator.new node_name: data['node']['node_name'],
 														local_ipv4: data['node']['local_ipv4'],
 														contact: parsed_tags['client'],
+														hostgroup_override: parsed_tags['hostgroup'],
 														run_list: data['run_list'].map(&:downcase)
 
 				hostgroup_configs = gen.generate_hostgroups
@@ -76,6 +77,11 @@ class Runner
 			unless parsed.keys.include? "client"
 				RunnerUtils.warn "No client tag found, defaulting to #{RunnerUtils.app_config.default_client}"
 				parsed["client"] = RunnerUtils.app_config.default_client
+			end
+
+			unless parsed.keys.include? "hostgroup"
+				RunnerUtils.debug "No hostgroup override found, defaulting to :default"
+				parsed["hostgroup"] = :default
 			end
 
 			RunnerUtils.debug "Parsed tags: #{parsed}"
