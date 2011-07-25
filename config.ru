@@ -13,7 +13,7 @@ $stdout.reopen(log)
 $stderr.reopen(log)
 
 Resque::Server.use Rack::Auth::Basic do |user, pass|
-	user == "cloudspace" and password == "iloveresque"
+	user == "cloudspace" and pass == "iloveresque"
 end
 
 run Rack::URLMap.new \
