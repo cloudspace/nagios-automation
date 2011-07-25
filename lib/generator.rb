@@ -36,7 +36,7 @@ class Generator
     RunnerUtils.debug "Loaded mappings: #{@mappings.inspect}"
 
     @context = get_context opts
-    RunnerUtils.debug "Created context: #{@context.insepct}"
+    RunnerUtils.debug "Created context: #{@context.inspect}"
 
     @services = Set.new
   end
