@@ -64,6 +64,7 @@ class Generator
 
       struct = OpenStruct.new
       struct.node_name = self.context.node_name
+			struct.contact = self.context.contact
       struct.service_name = (s.first =~ /%\{.*\}/) ? (s.first % context_hash) : s.first
       struct.service_command = (s.last =~ /%\{.*\}/) ? (s.last % context_hash) : s.last
 
