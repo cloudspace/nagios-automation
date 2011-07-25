@@ -17,6 +17,19 @@ ssh_options[:paranoid] = false
 role :app, "na.cloudspace.com"
 set :deploy_to, "/srv/#{application}"
 
+
+namespace :log_level do
+	['debug', 'info'].each do |level|
+		desc "Sets the app's log level to #{level}"
+		task level.to_sym do
+			run "cd #{current_path} ; sed -i.bak 's/log_level:.*/log_level: #{level}/g' config/app_config.yaml"
+
+			deploy.api.restart
+			deploy.resque.restart
+		end
+	end
+end
+
 namespace :deploy do
   task :start do
     run "start god"
