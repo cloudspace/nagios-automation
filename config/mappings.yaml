@@ -25,26 +25,61 @@ basic_checks:
 
 # Matching recipes namespace. Put definitions here to match eg. "recipe[nginx]" as a run_list item.
 recipe:
-  nginx:
+  nginx: &nginx
     -
       - "Nginx Running"
       - "check_nginx"
     -
       - "HTTP Check: %{node_name}"
       - "http_check!%{local_ipv4}"
+  "nginx::source": *nginx
+  "mysql::server": &mysql
+    -
+      - "MySQL Running"
+      - "check_mysql"
+    -
+      - "MySQL SELECT Check"
+      - "mysql_select_check"
+  postfix: &postfix
+    -
+      - "Postfix Running"
+      - "check_postfix"
+  "chef-client::service": &chef-service
+    -
+      - "Chef Client Running"
+      - "Check_chef_client"
+  "dashboard.impermium.com": &impermium-dashboard
+    -
+      - "Unicorn Running"
+      - "check_unicorn"
 
 # Matching roles namespace. Put definitions here to match eg. "role[rails_web]" as a run_list item.
 role:
+  "dashboard-impermium-com":
+    [
+      *nginx,
+      *postfix,
+      *chef-service,
+      *mysql,
+      *impermium-dashboard
+    ]
 
 # Ignored namespace. Definitions put here will be ignored, so unmonitorable recipes won't raise warnings.
 # NOTE: Definitions put here will be ignored EVEN IF THEY ALSO EXIST ABOVE.
 ignored:
   recipe:
+    - "ubuntu"
+    - "root-login"
+    - "build-essential"
     - "aws"
     - "apt"
     - "git"
+    - "curl"
+    - "openssl"
     - "xfs"
     - "apparmor"
+    - "nagios::nrpe"
+    - "nagios::register"
     - "onetruefan::zend"
     - "application"
     - "database"
