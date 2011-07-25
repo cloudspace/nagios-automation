@@ -12,6 +12,10 @@ log = File.new("log/sinatra.log", "a+")
 $stdout.reopen(log)
 $stderr.reopen(log)
 
+Resque::Server.use Rack::Auth::Basic do |user, pass|
+	user == "cloudspace" and password == "iloveresque"
+end
+
 run Rack::URLMap.new \
   "/"       => Sinatra::Application.new,
   "/resque" => Resque::Server.new
