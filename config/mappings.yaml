@@ -37,9 +37,6 @@ recipe:
     -
       - "MySQL Running"
       - "check_mysql_server"
-    -
-      - "MySQL SELECT Check"
-      - "mysql_select_check"
   postfix: &postfix
     -
       - "Check SMTP"
