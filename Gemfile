@@ -6,6 +6,7 @@ gem "rake", "~> 0.9.0"
 gem "erubis", "~> 2.7.0"
 gem "ohai", "~> 0.6.4"
 gem "mail", "~> 2.2.18"
+gem "redis", "~> 2.2.1"
 
 group :production do
 	gem "unicorn", "~> 4.0.1", :require => nil

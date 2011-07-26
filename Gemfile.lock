@@ -75,6 +75,7 @@ DEPENDENCIES
   ohai (~> 0.6.4)
   railsless-deploy (~> 1.0.2)
   rake (~> 0.9.0)
+  redis (~> 2.2.1)
   resque (~> 1.17.1)
   shotgun (~> 0.9)
   sinatra (~> 1.2.6)
