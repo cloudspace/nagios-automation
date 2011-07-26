@@ -6,7 +6,7 @@ set :branch, "master"
 set :deploy_via, :remote_cache
 set :keep_releases, 5
 
-set :bundle_flags,    "--deployment --quiet --binstubs"
+set :bundle_flags,    "--deployment --quiet --binstubs=sbin"
 require 'bundler/capistrano'
 
 set :user, "root"
