@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'redis'
 require 'yaml'
 require 'json'
 require 'ostruct'
@@ -24,6 +25,7 @@ class Runner
     def perform action, data
       # Initial setup
       controller = NagiosController.new
+			redis = Redis.new
 
       RunnerUtils.debug "Init for new run. Action: #{action.inspect}\nData: #{data.inspect}"
 
@@ -44,10 +46,24 @@ class Runner
 				create_hostgroups! hostgroup_configs
         controller.restart
 
+				# Store a version of this node config in redis
+				redis_key = "reg_node_" << data['node']['node_name']
+				redis_key_unreg = "unreg_node_" << data['node']['node_name']
+
+				redis.rename redis_key_unreg, redis_key if redis.exists? redis_key_unreg
+
+				existing = redis.lindex redis_key, 0
+				redis.lpush redis_key, data if existing.nil? or existing != data
+
         RunnerUtils.info "Registered node: #{data['node']['node_name']}"
       when 'unregister'
         remove_files! data['node_name']
         controller.restart
+
+				# Move this node to the unregistered key
+				redis_key = "reg_node_" << data['node_name']
+				redis_key_unreg = "unreg_node_" << data['node_name']
+				redis.rename redis_key, redis_key_unreg if redis.exists redis_key
 
         RunnerUtils.info "Unregistered node: #{data['node_name']}"
       else
