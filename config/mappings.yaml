@@ -1,4 +1,4 @@
-# Simple YAML structure mapping recipe and role names to check (service) names.
+# YAML structure mapping recipe and role names to check (service) names.
 # Expressed in a simple tuple format:
 # -
 #   - <Check description>
